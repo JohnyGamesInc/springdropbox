@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Cloud storage</title>
+
+    <link rel="icon" type="image/png" th:href="@{/favicon.ico}"/>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}"/>
+</head>
+
+<body>
+<div class="container">
+    <div class="container bgcont center-block" style="display:inline-flex;">
+        <h1 class="page-header">Welcome <span th:text="${username}"></span> in your private cloud storage</h1>
+        <p sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="POST">
+            <input type="submit" class="btn btn-danger" value="Logout"/>
+        </form>
+        </p>
+    </div>
+
+    <div style="display: inline-flex">
+        <div>
+            <div th:if="${message}">
+                <h2 th:text="${message}"/>
+            </div>
+            <article class="card-body">
+                <form th:action="@{__${username}__}" th:object="${file}" method="post"
+                      enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label>Files to upload</label>
+                            <input type="file" name="file" class="form-control-file" accept="/*" size="1048576000"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" name="uploadFile" class="btn btn-primary btn-block">Upload</button>
+                    </div>
+                </form>
+            </article>
+        </div>
+        <div>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Path</th>
+                    <th>Size</th>
+                    <th>Updated at</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody th:if="${!files.isEmpty()}">
+                <tr th:each="file : ${files}">
+                    <td th:text="${file.id}"/>
+                    <td th:text="${file.title}"/>
+                    <td th:text="${file.path}"/>
+                    <td th:value="${file.size} /">
+                    <td th:datetime="${file.create_at} /">
+                    <td>
+                        <a th:href="" class="btn btn-primary">Download</a>
+                    </td>
+                    <td>
+                        <a th:href="" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <p th:if="${files.isEmpty()}">Cloud is still empty :(</p>
+        </div>
+    </div>
+</div>
+</body>
