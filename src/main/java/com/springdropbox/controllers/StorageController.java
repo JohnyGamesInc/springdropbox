@@ -41,7 +41,6 @@ public class StorageController {
         List<File> files = fileService.findAllFilesByUserId(user.getId());
         model.addAttribute("username", username);
         model.addAttribute("files", files);
-        model.addAttribute("message", null);
         return "user-storage";
     }
 

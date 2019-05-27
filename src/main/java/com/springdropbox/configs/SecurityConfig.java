@@ -1,5 +1,7 @@
 package com.springdropbox.configs;
 
+import com.springdropbox.controllers.MainController;
+import com.springdropbox.controllers.StorageController;
 import com.springdropbox.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 @Configuration
@@ -37,8 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .anyRequest().permitAll()
-                .antMatchers("/**").permitAll()
-                .antMatchers("/**/").permitAll()
+                .antMatchers("/**").authenticated()
                 .antMatchers("/register/**").permitAll()
 //                .antMatchers("/admin/**").hasRole("ADMIN")
 //                .antMatchers("/products/**").hasRole("ADMIN")
@@ -52,9 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout()
-                .clearAuthentication(true)
                 .logoutSuccessUrl("/")
-                .permitAll();
+                .permitAll()
+                .clearAuthentication(true);
     }
 
     @Bean
