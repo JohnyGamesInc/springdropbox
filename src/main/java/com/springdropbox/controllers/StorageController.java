@@ -56,7 +56,7 @@ public class StorageController {
                 "You successfully uploaded " + file.getOriginalFilename() + "!"
         );
 
-        return "redirect:/";
+        return "redirect:/" + username;
     }
 
     @GetMapping("/{username}/{filename:.+}")

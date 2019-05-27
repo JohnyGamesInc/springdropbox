@@ -1,5 +1,6 @@
 package com.springdropbox.services;
 
+import com.springdropbox.configs.CustomAuthenticationSuccessHandler;
 import com.springdropbox.entities.User;
 import com.springdropbox.exceptions.StorageException;
 import com.springdropbox.exceptions.StorageFileNotFoundException;
@@ -34,9 +35,9 @@ public class FileServiceImpl implements FileService {
     FileRepository fileRepository;
     @Autowired
     UserRepository userRepository;
-    private Path rootLocation;
-    private HttpSession session;
-    private User currentUser;
+    public static Path rootLocation;
+    public static HttpSession session;
+    public static User currentUser;
 
     @Override
     public List<String> findAllPathsByUserId(Long userId) {

@@ -46,7 +46,7 @@
                 </form>
             </article>
         </div>
-        <div>
+        <div th:object="${file}">
             <table class="table table-hover">
                 <thead>
                 <tr>
@@ -64,13 +64,13 @@
                     <td th:text="${file.id}"/>
                     <td th:text="${file.title}"/>
                     <td th:text="${file.path}"/>
-                    <td th:value="${file.size} /">
-                    <td th:datetime="${file.create_at} /">
+                    <td th:text="${file.size}"/>
+                    <td th:text="${file.create_at}"/>
                     <td>
-                        <a th:href="" class="btn btn-primary">Download</a>
+                        <a th:href="@{/redirect}" class="btn btn-primary">Download</a>
                     </td>
                     <td>
-                        <a th:href="" class="btn btn-danger">Delete</a>
+                        <a th:href="@{/redirect}" class="btn btn-danger">Delete</a>
                     </td>
                 </tr>
                 </tbody>
