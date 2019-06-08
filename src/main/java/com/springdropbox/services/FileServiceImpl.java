@@ -1,6 +1,5 @@
 package com.springdropbox.services;
 
-import com.springdropbox.configs.CustomAuthenticationSuccessHandler;
 import com.springdropbox.entities.User;
 import com.springdropbox.exceptions.StorageException;
 import com.springdropbox.exceptions.StorageFileNotFoundException;
@@ -77,10 +76,11 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public void deleteFileByPath(String fileName) {
+    public void deleteFilesByPath(String fileName) {
         File filePath = new File(rootLocation.toString() + "/" + fileName);
+        boolean isExists = fileRepository.existsByPath(filePath.toString());
         FileSystemUtils.deleteRecursively(filePath);
-        fileRepository.deleteByPath(filePath.toString());
+        fileRepository.deleteFilesByPath(filePath.toString());
     }
 
     @Override

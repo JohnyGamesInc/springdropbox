@@ -58,6 +58,20 @@ public class StorageController {
         return "redirect:/" + username;
     }
 
+    @GetMapping("/{username}/{filename:.+}/delete")
+    public String deleteFile(@PathVariable String filename,
+                             @PathVariable String username,
+                                   RedirectAttributes redirectAttributes) {
+
+        fileService.deleteFilesByPath(filename);
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "You successfully delete " + filename + "!"
+        );
+
+        return "redirect:/" + username;
+    }
+
     @GetMapping("/{username}/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename,

@@ -20,7 +20,7 @@ public interface FileService {
 
     Resource loadAsResource(String filename);
 
-    void deleteFileByPath(String path);
+    void deleteFilesByPath(String path);
 
     void store(MultipartFile file);
 

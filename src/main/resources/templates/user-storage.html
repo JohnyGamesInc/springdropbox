@@ -66,10 +66,10 @@
                     <td th:text="${file.size}"/>
                     <td th:text="${file.create_at}"/>
                     <td>
-                        <a th:href="@{/redirect}" class="btn btn-primary">Download</a>
+                        <a th:href="@{__${username}__/__${file.title}__}" class="btn btn-primary">Download</a>
                     </td>
                     <td>
-                        <a th:href="@{/redirect}" class="btn btn-danger">Delete</a>
+                        <a th:href="@{__${username}__/__${file.title}__/delete}" class="btn btn-danger">Delete</a>
                     </td>
                 </tr>
                 </tbody>

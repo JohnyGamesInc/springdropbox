@@ -36,7 +36,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		session.setAttribute("user", theUser);
 		FileServiceImpl.session = this.session;
 		FileServiceImpl.currentUser = ((User) session.getAttribute("user"));
-		FileServiceImpl.rootLocation = (Paths.get("./storage/" + ((User) session.getAttribute("user")).getUserName()));
+		FileServiceImpl.rootLocation = Paths.get("./storage/" + ((User) session.getAttribute("user")).getUserName());
 		if(!request.getHeader("referer").contains("login")) {
 			response.sendRedirect(request.getHeader("referer"));
 		} else {
