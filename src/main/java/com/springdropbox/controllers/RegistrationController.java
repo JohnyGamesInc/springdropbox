@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.validation.Valid;
 import java.io.EOFException;
 import java.io.File;
-import java.nio.file.Files;
 
 @Controller
 @RequestMapping("/register")

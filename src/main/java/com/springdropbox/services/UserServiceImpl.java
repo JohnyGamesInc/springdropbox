@@ -32,11 +32,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        User user = userRepository.findOneByUserName(userName);
+        if (user == null) {
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(),
+                                                                      mapRolesToAuthorities(user.getRoles())
+        );
+    }    @Override
+    @Transactional
     public User findByUserName(String username) {
         return userRepository.findOneByUserName(username);
     }
 
-    @Override
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+    }    @Override
     @Transactional
     public boolean save(SystemUser systemUser) {
         User user = new User();
@@ -56,19 +68,7 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userRepository.findOneByUserName(userName);
-        if (user == null) {
-            throw new UsernameNotFoundException("Invalid username or password.");
-        }
-        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(),
-                                                                      mapRolesToAuthorities(user.getRoles())
-        );
-    }
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
-    }
+
+
 }

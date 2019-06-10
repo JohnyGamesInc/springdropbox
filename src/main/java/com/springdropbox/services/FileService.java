@@ -2,9 +2,9 @@ package com.springdropbox.services;
 
 import com.springdropbox.entities.File;
 
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
-import org.springframework.core.io.Resource;
 import java.nio.file.Path;
 import java.util.List;
 

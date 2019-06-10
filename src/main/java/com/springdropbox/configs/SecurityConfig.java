@@ -1,8 +1,7 @@
 package com.springdropbox.configs;
 
-import com.springdropbox.controllers.MainController;
-import com.springdropbox.controllers.StorageController;
 import com.springdropbox.services.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 @Configuration
@@ -33,15 +31,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
+        auth.authenticationProvider(authenticationProvider())
+                //Сообщаем секюрити что нужно взаимодействовать с бд, для сверки ролей, паролей
+                .jdbcAuthentication()
+                .dataSource(dataSource)
+                .usersByUsernameQuery("select username, password from users where username=?")
+                .authoritiesByUsernameQuery(
+                        "select users.username, roles.name from users left join users_roles on users.id = users_roles.user_id left join roles on roles.id = users_roles.role_id");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .anyRequest().permitAll()
-                .antMatchers("/**").authenticated()
-                .antMatchers("/register/**").permitAll()
+                .antMatchers("/", "/register/**").permitAll()
+                .antMatchers("/{username}/**").authenticated()
 //                .antMatchers("/admin/**").hasRole("ADMIN")
 //                .antMatchers("/products/**").hasRole("ADMIN")
 //                .antMatchers("/shop/order/**").authenticated()
@@ -60,15 +63,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
         auth.setUserDetailsService(userService);
         auth.setPasswordEncoder(passwordEncoder());
         return auth;
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

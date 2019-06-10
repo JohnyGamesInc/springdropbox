@@ -8,9 +8,11 @@ import com.springdropbox.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,24 +26,37 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class StorageController {
     @Autowired
-    FileService fileService;
+    private FileService fileService;
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @GetMapping("/{username}")
     public String showUserStorage(@PathVariable String username,
                                   @ModelAttribute("file") File file,
                                   Model model) {
-        User user = userService.findByUserName(username);
-        List<File> files = fileService.findAllFilesByUserId(user.getId());
-        model.addAttribute("username", username);
-        model.addAttribute("files", files);
-        return "user-storage";
+        String authUserName = getAuthenticatedUserName();
+        if (authUserName.equals(username)) {
+            User user = userService.findByUserName(username);
+            List<File> files = fileService.findAllFilesByUserId(user.getId());
+            model.addAttribute("username", username);
+            model.addAttribute("files", files);
+            return "user-storage";
+        } else {
+            throw new SecurityException("You don't have permissions to access on this page MFC");
+        }
+    }
+
+    private String getAuthenticatedUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            return currentUserName;
+        }
+        return null;
     }
 
     @PostMapping("/{username}")
@@ -61,7 +76,7 @@ public class StorageController {
     @GetMapping("/{username}/{filename:.+}/delete")
     public String deleteFile(@PathVariable String filename,
                              @PathVariable String username,
-                                   RedirectAttributes redirectAttributes) {
+                             RedirectAttributes redirectAttributes) {
 
         fileService.deleteFilesByPath(filename);
         redirectAttributes.addFlashAttribute(

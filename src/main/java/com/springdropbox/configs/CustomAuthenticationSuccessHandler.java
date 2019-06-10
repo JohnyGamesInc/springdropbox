@@ -23,7 +23,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 	private UserService userService;
 
 	@Autowired
-	FileServiceImpl fileService;
+	private FileServiceImpl fileService;
 
 	public static HttpSession session;
 

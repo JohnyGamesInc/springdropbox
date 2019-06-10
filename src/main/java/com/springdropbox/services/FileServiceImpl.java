@@ -30,13 +30,13 @@ import java.util.List;
 @Data
 public class FileServiceImpl implements FileService {
 
+    public static Path rootLocation;
+    public static HttpSession session;
+    public static User currentUser;
     @Autowired
     FileRepository fileRepository;
     @Autowired
     UserRepository userRepository;
-    public static Path rootLocation;
-    public static HttpSession session;
-    public static User currentUser;
 
     @Override
     public List<String> findAllPathsByUserId(Long userId) {
