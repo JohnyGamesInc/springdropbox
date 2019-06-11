@@ -11,7 +11,7 @@ Technologies:
  - Spring Security
  - MySql
  - Flyway
- - Lomboc
+ - Lombok
  - DevTools
 
  How to start?
